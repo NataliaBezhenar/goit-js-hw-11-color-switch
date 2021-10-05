@@ -15,17 +15,18 @@ const colors = [
 ];
 
 class ColorPicker {
-  constructor() {
+  constructor({ onTick }) {
     this.intervalId = null;
     this.isActive = false;
+    this.onTick = onTick;
   }
 
   start() {
     if (this.isActive) {
       return;
     }
-    this.intervalId = setInterval(function () {
-      updateColor();
+    this.intervalId = setInterval(() => {
+      this.onTick();
     }, 1000);
     this.isActive = true;
   }
@@ -41,15 +42,19 @@ const updateColor = () => {
   refs.body.style.backgroundColor =
     colors[randomIntegerFromInterval(0, colors.length - 1)];
 };
-const colorPicker = new ColorPicker({ updateColor });
 
 const randomIntegerFromInterval = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+// event listeners
 refs.startBtn.addEventListener("click", () => {
   colorPicker.start();
 });
 refs.stopBtn.addEventListener("click", () => {
   colorPicker.stop();
+});
+
+const colorPicker = new ColorPicker({
+  onTick: updateColor,
 });
